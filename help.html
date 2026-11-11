@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panduan — Memora</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+  
+  <link rel="stylesheet" href="assets/fontawesome/css/all.min.css?v=6">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/app.css?v=6">
+  <link rel="stylesheet" href="css/help.css?v=6">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo"><i class="fa-solid fa-book"></i></span>
+      <div class="brand-text">
+        <h1>Panduan Memora</h1>
+        <p>Tips & Tutorial</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnTheme" class="icon-btn" title="Mode gelap" aria-label="Ganti tema">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="index.html" class="btn btn-primary btn-sm" style="text-decoration: none;">
+        <i class="fa-solid fa-house"></i> Kembali ke App
+      </a>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="card help-content">
+      <h1>Selamat datang di Memora! 📘</h1>
+      <p>Memora adalah aplikasi catatan 100% <i>client-side</i> yang menggunakan sistem <i>immutable commit</i>. Setiap perubahan disimpan sebagai riwayat (seperti Git), dan dilindungi dengan kriptografi (Hash + HMAC).</p>
+
+      <h2>1. Memulai (Passphrase)</h2>
+      <p>Klik tombol <code>Set Passphrase</code> di pojok kanan atas. Passphrase ini berfungsi sebagai kunci untuk mengunci integritas file. <strong>Jangan lupa!</strong> Passphrase tidak disimpan di mana pun. Jika hilang, Anda tidak akan bisa memverifikasi atau membuka file <code>.memento</code> Anda.</p>
+
+      <h2>2. Menulis & Format Teks</h2>
+      <p>Gunakan tombol toolbar di atas editor atau ketik langsung sintaks berikut:</p>
+      <ul>
+        <li><code># Judul 1</code> (Heading 1)</li>
+        <li><code>## Judul 2</code> (Heading 2)</li>
+        <li><code>**Teks Tebal**</code> untuk <strong>Tebal</strong></li>
+        <li><code>*Teks Miring*</code> untuk <em>Miring</em></li>
+        <li><code>`Kode`</code> untuk <code>Kode</code></li>
+      </ul>
+      <p>Shortcut keyboard: <kbd>Ctrl</kbd> + <kbd>B</kbd> (Bold) dan <kbd>Ctrl</kbd> + <kbd>I</kbd> (Italic).</p>
+
+      <h2>3. Menyisipkan Media (Gambar, Audio, Video)</h2>
+      <p>Klik tombol 📎 <strong>Upload</strong> untuk mengunggah file baru. Kode media akan otomatis disisipkan ke dalam teks. Atau, ketik <code>@</code> di awal baris untuk membuka <strong>Media Library</strong> dan menyisipkan file yang sudah pernah di-upload sebelumnya.</p>
+      <p>Media akan dirender sebagai kotak atau pemutar (jika audio/video) di dalam catatan.</p>
+
+      <h2>4. Mengubah Ukuran Media (Resize)</h2>
+      <p>Secara default, media akan tampil dengan ukuran normal (maksimal lebar layar). Anda bisa mengubah ukurannya dengan menambahkan parameter <code>size=...</code> di dalam kurung siku media.</p>
+      <p>Pilihan ukuran:</p>
+      <ul>
+        <li><code>very-small</code> (Sangat kecil, ~120px)</li>
+        <li><code>small</code> (Kecil, ~250px)</li>
+        <li><code>large</code> (Besar, 85% layar)</li>
+        <li><code>very-large</code> (Penuh, 100% layar)</li>
+      </ul>
+      <p>Contoh penulisan:</p>
+      <pre>![[media:1ceb843b-8a32-4525-b683-1f849c1a6194]] (Normal)
+![[media:1ceb843b-8a32-4525-b683-1f849c1a6194]size=small] (Kecil)
+![[media:1ceb843b-8a32-4525-b683-1f849c1a6194]size=very-large] (Sangat Besar)</pre>
+      
+      <p class="note"><strong>Catatan:</strong> Fitur resize hanya berpengaruh pada tampilan (CSS). File aslinya tetap disimpan dalam resolusi penuh dan memakan ruang penyimpanan yang sama.</p>
+
+      <h2>5. Commit & Riwayat</h2>
+      <p>Setiap kali Anda selesai menulis, klik tombol <strong>Commit</strong> (atau <kbd>Ctrl</kbd> + <kbd>Enter</kbd>). Ini akan membuat <i>snapshot</i> permanen dengan timestamp WIB. Anda bisa melihat riwayat di panel <strong>Commit History</strong> di bawah editor, melakukan <i>Diff</i> (membandingkan perubahan), atau me-<i>Restore</i> catatan ke versi sebelumnya.</p>
+
+      <h2>6. Ekspor & Impor File (.memento)</h2>
+      <p>Klik <strong>Unduh .memento</strong> (atau <kbd>Ctrl</kbd> + <kbd>S</kbd>) untuk menyimpan seluruh catatan, riwayat, dan media ke dalam satu file terenkripsi. File ini bisa Anda simpan di cloud atau flashdisk. Untuk membukanya kembali, klik <strong>Impor .memento</strong>.</p>
+
+      <h2>7. Menghapus Media</h2>
+      <p>Buka Media Library (tombol <code>@</code>), lalu klik ikon 🗑 (Tempat Sampah) di samping media. Menghapus media akan <strong>menulis ulang seluruh riwayat commit</strong> Anda agar media tersebut benar-benar hilang. Aplikasi akan meminta konfirmasi dan passphrase Anda.</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>&copy; 2026 Memora — Catatan yang mengingat setiap momennya.</small>
+  </footer>
+
+  <script src="js/help.js?v=6"></script>
+</body>
+</html>

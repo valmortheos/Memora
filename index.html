@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Memora — Catatan Immutable</title>
+  <meta name="description" content="Catatan pribadi dengan commit history immutable, format .memento, tanpa backend.">
+  <meta name="theme-color" content="#f4f6fa">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+  
+  <link rel="stylesheet" href="assets/fontawesome/css/all.min.css?v=6">
+  <link rel="stylesheet" href="css/base.css?v=6">
+  <link rel="stylesheet" href="css/app.css?v=6">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo"><i class="fa-solid fa-book"></i></span>
+      <div class="brand-text">
+        <h1>Memora</h1>
+        <p>Catatan immutable · .memento · WIB</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <a href="help.html" class="icon-btn" title="Panduan & Bantuan" aria-label="Bantuan" style="text-decoration:none;">
+        <i class="fa-solid fa-circle-question"></i>
+      </a>
+      <button id="btnNew" class="icon-btn" title="Catatan baru" aria-label="Catatan baru">
+        <i class="fa-solid fa-file-circle-plus"></i>
+      </button>
+      <button id="btnTheme" class="icon-btn" title="Mode gelap" aria-label="Ganti tema">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button id="passBtn" class="btn btn-outline btn-sm">
+        <i class="fa-solid fa-lock"></i>
+        <span class="btn-label">Set Passphrase</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="editor-section card">
+      <div class="editor-toolbar" role="toolbar" aria-label="Format teks">
+        <button type="button" class="fmt-btn" data-action="bold" title="Bold (Ctrl+B)" aria-label="Bold">
+          <i class="fa-solid fa-bold"></i>
+        </button>
+        <button type="button" class="fmt-btn" data-action="italic" title="Italic (Ctrl+I)" aria-label="Italic">
+          <i class="fa-solid fa-italic"></i>
+        </button>
+        <button type="button" class="fmt-btn" data-action="h1" title="Judul 1" aria-label="Judul 1">
+          <i class="fa-solid fa-heading"></i>
+        </button>
+        <button type="button" class="fmt-btn" data-action="h2" title="Judul 2" aria-label="Judul 2">
+          <span class="fmt-h2">H2</span>
+        </button>
+        <span class="toolbar-sep"></span>
+        <button type="button" class="fmt-btn" id="btnMediaPicker" title="Sisipkan media (Ctrl+M / @)" aria-label="Sisipkan media">
+          <i class="fa-solid fa-at"></i>
+        </button>
+        <span class="toolbar-sep"></span>
+        <button type="button" class="fmt-btn" id="btnPreview" data-action="preview" title="Pratinjau" aria-label="Pratinjau" aria-pressed="false">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+
+      <div class="editor-wrap">
+        <textarea id="editor" spellcheck="true"
+          placeholder="Tulis catatan Anda di sini…&#10;&#10;Format:&#10;  # Judul 1&#10;  ## Judul 2&#10;  **bold**  *italic*&#10;  @ untuk sisipkan media dari history&#10;  ![[media:ID]] untuk media inline"></textarea>
+        <div id="previewPane" class="preview-pane" hidden></div>
+      </div>
+
+      <div class="media-preview" id="mediaPreview" hidden></div>
+
+      <div class="commit-bar">
+        <input id="commitMsg" type="text" placeholder="Pesan commit (opsional · otomatis 'Auto-save')" maxlength="200">
+        <div class="commit-buttons">
+          <label class="btn btn-secondary" for="mediaInput" title="Upload media baru">
+            <i class="fa-solid fa-paperclip"></i>
+            <span class="btn-label">Upload</span>
+          </label>
+          <input type="file" id="mediaInput" hidden multiple accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/ogg,audio/wav,audio/mp4,video/mp4,video/webm">
+          <button id="btnCommit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Commit
+          </button>
+        </div>
+      </div>
+
+      <div class="file-actions">
+        <button id="btnDownload" class="btn btn-outline">
+          <i class="fa-solid fa-download"></i> Unduh .memento
+        </button>
+        <button id="btnImport" class="btn btn-outline">
+          <i class="fa-solid fa-upload"></i> Impor .memento
+        </button>
+        <input type="file" id="importInput" hidden accept=".memento">
+      </div>
+
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="timeline-section card">
+      <button class="timeline-header" id="commitToggle" aria-expanded="false">
+        <span class="timeline-title">
+          <span class="chevron" id="chevron"><i class="fa-solid fa-chevron-right"></i></span>
+          Commit History
+          <span class="badge" id="commitCount">0</span>
+        </span>
+        <span class="verify-badge" id="verifyBadge">
+          <i class="fa-solid fa-lock"></i> belum diset
+        </span>
+      </button>
+      <div class="timeline-body" id="commitList" hidden></div>
+    </section>
+
+    <section class="stats-section" id="statsSection" hidden>
+      <div class="stat"><span id="statCommits">0</span><small>Commits</small></div>
+      <div class="stat"><span id="statMedia">0</span><small>Media</small></div>
+      <div class="stat"><span id="statSize">0 B</span><small>Ukuran .memento</small></div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>100% client-side · data tidak pernah keluar dari browser · format <code>.memento</code></small>
+  </footer>
+
+  <!-- SIDEBAR: Media Library -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <aside class="sidebar" id="mediaSidebar">
+    <div class="sidebar-header">
+      <h2><i class="fa-solid fa-at"></i> Media Library</h2>
+      <button class="icon-btn" id="sidebarClose" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="sidebar-search">
+      <input type="search" id="pickerSearch" placeholder="Cari nama file, tipe, atau ID…" autocomplete="off">
+    </div>
+    
+    <div class="sidebar-list" id="pickerList"></div>
+    
+    <div class="sidebar-empty" id="pickerEmpty" hidden>
+      <i class="fa-solid fa-photo-film"></i>
+      <p>Belum ada media tersimpan.<br>Upload file terlebih dahulu lewat tombol 📎.</p>
+    </div>
+
+    <div class="sidebar-footer">
+      <small><i class="fa-solid fa-circle-info"></i> Klik untuk Putar/Lihat · <i class="fa-solid fa-arrow-right"></i> untuk Sisipkan</small>
+    </div>
+  </aside>
+
+  <!-- Passphrase Modal -->
+  <dialog id="passModal">
+    <form method="dialog" id="passForm">
+      <h2 id="passTitle">Set Passphrase</h2>
+      <p class="modal-desc" id="passDesc">Passphrase dipakai untuk HMAC signature. Tidak disimpan di file — hanya di memori sesi ini.</p>
+      <div class="pass-input-wrap">
+        <input type="password" id="passInput" placeholder="Minimal 6 karakter" minlength="6" required autocomplete="off">
+        <button type="button" class="pass-eye" id="passEye" aria-label="Tampilkan passphrase" tabindex="-1">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" id="passCancel">Batal</button>
+        <button type="submit" class="btn btn-primary" value="ok">Simpan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Diff Modal -->
+  <dialog id="diffModal">
+    <div class="modal-header">
+      <h2>Diff Commit</h2>
+      <button class="icon-btn" id="diffClose" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="diffBody"></div>
+  </dialog>
+
+  <!-- Lightbox -->
+  <dialog id="lightbox">
+    <div class="lightbox-content" id="lightboxContent"></div>
+    <button class="icon-btn lightbox-close" id="lightboxClose" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+  </dialog>
+
+  <script type="module" src="js/app.js?v=6"></script>
+</body>
+</html>
